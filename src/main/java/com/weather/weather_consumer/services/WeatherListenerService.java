@@ -7,15 +7,15 @@ import org.springframework.stereotype.Service;
 @Service
 public class WeatherListenerService {
 
-    private String lastMessage = "";
+    private String lastData = null;
 
     @RabbitListener(queues = RabbitMQConfig.QUEUE_NAME)
-    public void receiveMessage(String message) {
-        System.out.println("Mensagem recebida do RabbitMQ: " + message);
-        lastMessage = message;
+    public void receiveFromProducer(String data) {
+        System.out.println("Dado recebido do Producer: " + data);
+        lastData = data;
     }
 
-    public String getLastMessage() {
-        return lastMessage;
+    public String getLastData() {
+        return lastData;
     }
 }

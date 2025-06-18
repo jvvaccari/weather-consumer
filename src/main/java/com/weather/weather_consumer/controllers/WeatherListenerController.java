@@ -17,7 +17,7 @@ public class WeatherListenerController {
     }
 
     @GetMapping("/lastMessage")
-    public String getLastMessage(){
-        return weatherListenerService.getLastMessage();
+    public String getLastData(){
+        return weatherListenerService.getLastData();
     }
 }
