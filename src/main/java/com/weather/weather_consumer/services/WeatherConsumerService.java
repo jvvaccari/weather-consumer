@@ -1,21 +1,22 @@
 package com.weather.weather_consumer.services;
 
 import com.weather.weather_consumer.config.RabbitMQConfig;
+import com.weather.weather_consumer.classes.WeatherInternalPublisher;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Service;
 
 @Service
 public class WeatherConsumerService {
 
-    private String lastData = null;
+    private final WeatherInternalPublisher internalPublisher;
 
-    @RabbitListener(queues = RabbitMQConfig.QUEUE_NAME)
-    public void receiveFromProducer(String data) {
-        System.out.println("Dado recebido do Producer: " + data);
-        lastData = data;
+    public WeatherConsumerService(WeatherInternalPublisher internalPublisher) {
+        this.internalPublisher = internalPublisher;
     }
 
-    public String getLastData() {
-        return lastData;
+    @RabbitListener(queues = "#{myQueue.name}")
+    public void receiveFromProducer(String data) {
+        System.out.println("Mensagem recebida do RabbitMQ: " + data);
+        internalPublisher.notifyListeners(data);
     }
 }

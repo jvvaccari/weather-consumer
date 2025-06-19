@@ -16,8 +16,4 @@ public class WeatherConsumerController {
         return "Hello from weather consumer!";
     }
 
-    @GetMapping("/lastMessage")
-    public String getLastData(){
-        return weatherConsumerService.getLastData();
-    }
 }
