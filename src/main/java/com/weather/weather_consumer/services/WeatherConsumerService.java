@@ -16,7 +16,6 @@ public class WeatherConsumerService {
 
     @RabbitListener(queues = "#{myQueue.name}")
     public void receiveFromProducer(String data) {
-        System.out.println("Mensagem recebida do RabbitMQ: " + data);
         internalPublisher.notifyListeners(data);
     }
 }
