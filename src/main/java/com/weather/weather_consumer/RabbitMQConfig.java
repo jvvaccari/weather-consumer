@@ -1,4 +1,4 @@
-package com.weather.weather_consumer.config;
+package com.weather.weather_consumer;
 
 import org.springframework.amqp.core.*;
 import org.springframework.context.annotation.Bean;
