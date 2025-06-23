@@ -45,20 +45,34 @@ public class AlertService implements WeatherDataListener {
 
             double temperature = firstElement.get("temperature2m").asDouble();
             double windSpeed = firstElement.get("windSpeed10m").asDouble();
+            double apparentTemperature = firstElement.get("apparentTemperature").asDouble();
 
             ObjectNode alertNode = objectMapper.createObjectNode();
 
             boolean hasAlert = false;
 
-            if (temperature <= 0.9) {
-                System.out.println("[ALERTA] Baixa temperatura detectada!");
-                alertNode.put("Temperatura", "Baixa temperatura detectada!");
+            if (temperature < 0) {
+                alertNode.put("Temperatura", "Temperatura abaixo dos 0 graus celsius detectada");
                 hasAlert = true;
             }
 
-            if (windSpeed >= 10) {
-                System.out.println("[ALERTA] Ventos acima de 10m!");
-                alertNode.put("Vento", "Ventos acima de 10m detectados!");
+            if (temperature > 30) {
+                alertNode.put("Temperatura", "Temperatura acima dos 30 graus celsius detectada");
+                hasAlert = true;
+            }
+
+            if (temperature <= 0.9) {
+                alertNode.put("Temperatura", "Baixa temperatura detectada");
+                hasAlert = true;
+            }
+
+            if (windSpeed >= 16) {
+                alertNode.put("Vento", "Ventos acima de 16 m/s");
+                hasAlert = true;
+            }
+
+            if (apparentTemperature < 0) {
+                alertNode.put("Sensação Térmica", "Sensação térmica abaixo dos 0 graus Celsius");
                 hasAlert = true;
             }
 
