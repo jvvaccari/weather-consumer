@@ -1,7 +1,6 @@
 package com.weather.weather_consumer.services;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Component;
@@ -27,19 +26,14 @@ public class DashboardService implements WeatherDataListener {
         publisher.registerListener(this);
     }
 
-    private Optional<JsonNode> createError(String message) {
-        ObjectNode errorNode = objectMapper.createObjectNode();
-        errorNode.put("error", message);
-        return Optional.of(errorNode);
-    }
-
     @Override
-    public Optional<JsonNode> onDataReceived(String jsonData) {
+    public void onDataReceived(String jsonData) {
         try {
             JsonNode root = objectMapper.readTree(jsonData);
 
             if (!root.isArray() || root.size() == 0) {
-                return createError("JSON recebido não é um array válido ou está vazio.");
+                System.err.println("[ERRO] JSON recebido não é um array válido ou está vazio.");
+                return;
             }
 
             JsonNode data = root.get(0);
@@ -63,10 +57,8 @@ public class DashboardService implements WeatherDataListener {
 
             System.out.println("[DASHBOARD SERVICE] Dados recebidos e processados: " + data.toString());
 
-            return Optional.of(data);
-
         } catch (Exception e) {
-            return createError("Erro ao processar JSON: " + e.getMessage());
+            System.err.println("[ERRO] Erro ao processar JSON: " + e.getMessage());
         }
     }
 

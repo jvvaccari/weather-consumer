@@ -1,6 +1,6 @@
 package com.weather.weather_consumer.services;
 
-import com.weather.weather_consumer.config.RabbitMQConfig;
+import com.weather.weather_consumer.RabbitMQConfig;
 import com.weather.weather_consumer.classes.WeatherInternalPublisher;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Service;
