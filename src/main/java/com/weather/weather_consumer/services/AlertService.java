@@ -8,17 +8,20 @@ import org.springframework.stereotype.Component;
 import com.weather.weather_consumer.interfaces.WeatherDataListener;
 import com.weather.weather_consumer.classes.WeatherInternalPublisher;
 import java.util.Optional;
+import com.weather.weather_consumer.services.HistoryService;
 
 @Component
 public class AlertService implements WeatherDataListener {
 
     private final WeatherInternalPublisher publisher;
     private final ObjectMapper objectMapper;
-    private JsonNode alert;
+    private final HistoryService historyService;
+    private JsonNode alerts;
 
-    public AlertService(WeatherInternalPublisher publisher, ObjectMapper objectMapper) {
+    public AlertService(WeatherInternalPublisher publisher, ObjectMapper objectMapper,HistoryService historyService) {
         this.publisher = publisher;
         this.objectMapper = objectMapper;
+        this.historyService = historyService;
     }
 
     @PostConstruct
@@ -47,6 +50,7 @@ public class AlertService implements WeatherDataListener {
             double windSpeed = firstElement.get("windSpeed10m").asDouble();
             double apparentTemperature = firstElement.get("apparentTemperature").asDouble();
 
+            System.out.println(temperature +" | "+ windSpeed +" | "+ apparentTemperature);
             ObjectNode alertNode = objectMapper.createObjectNode();
 
             boolean hasAlert = false;
@@ -59,24 +63,24 @@ public class AlertService implements WeatherDataListener {
             if (temperature > 30) {
                 alertNode.put("Temperatura", "Temperatura acima dos 30 graus celsius detectada");
                 hasAlert = true;
-            }
-
-            if (temperature <= 0.9) {
-                alertNode.put("Temperatura", "Baixa temperatura detectada");
-                hasAlert = true;
+                System.out.println("Alerta de temperatura elevada");
             }
 
             if (windSpeed >= 16) {
                 alertNode.put("Vento", "Ventos acima de 16 m/s");
                 hasAlert = true;
+                System.out.println("Alerta de ventos acima de 16m/s");
             }
 
             if (apparentTemperature < 0) {
                 alertNode.put("Sensação Térmica", "Sensação térmica abaixo dos 0 graus Celsius");
                 hasAlert = true;
+                System.out.println("Alerta de sensação térmica levada");
             }
 
-            alert = hasAlert ? alertNode : null;
+            alerts = hasAlert ? alertNode : null;
+
+            historyService.updateAlertsIfChanged(alerts);
 
         } catch (Exception e) {
             System.err.println("[ERRO] Falha ao processar JSON: " + e.getMessage());
@@ -84,6 +88,6 @@ public class AlertService implements WeatherDataListener {
     }
 
     public Optional<JsonNode> getAlerts() {
-        return Optional.ofNullable(alert);
+        return Optional.ofNullable(alerts);
     }
 }
