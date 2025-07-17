@@ -60,14 +60,14 @@ public class AlertService implements WeatherDataListener {
                 hasAlert = true;
             }
 
-            if (temperature > 30) {
-                alertNode.put("Temperatura", "Temperatura acima dos 30 graus celsius detectada");
+            if (temperature > 20) {
+                alertNode.put("Temperatura", "Temperatura acima dos 20 graus celsius detectada");
                 hasAlert = true;
                 System.out.println("Alerta de temperatura elevada");
             }
 
-            if (windSpeed >= 16) {
-                alertNode.put("Vento", "Ventos acima de 16 m/s");
+            if (windSpeed >= 2 ) {
+                alertNode.put("Vento", "Ventos acima de 2 m/s");
                 hasAlert = true;
                 System.out.println("Alerta de ventos acima de 16m/s");
             }
